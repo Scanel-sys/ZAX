@@ -10,8 +10,8 @@ View::View(Model* model, NcursesAdapter* adapter) {
     this->model_->attach(this);
 }
 
-void View::update(const Mods* mods) {
-    if (mods->command == 0xFF) {
+void View::update(const ModelData* model_data) {
+    if (model_data->command == 0xFF) {
         this->adapter_->clear_window(command_window_id_);
         this->adapter_->write_window(command_window_id_, this->model_->get_command());
         this->adapter_->refresh_window(command_window_id_);

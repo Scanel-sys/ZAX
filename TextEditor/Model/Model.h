@@ -7,8 +7,9 @@
 
 class Model {
     private:
-        Mods mods_;
-        MyString command_;
+        ModelData model_data_;
+        MyString regime_name_;
+        MyString user_input_;
         std::vector<IObserver*> observers_;
     public:
         Model();
@@ -16,5 +17,7 @@ class Model {
         void detach(IObserver* observer);
         void notify();
         MyString& get_command();
-        void do_something();
+        enum Regime get_regime();
+        void take_new_input(char new_input);
+        void handle_input();
 };

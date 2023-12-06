@@ -13,5 +13,5 @@ class View: public IObserver {
         unsigned int command_window_id_, content_window_id_;
     public:
         View(Model* model, NcursesAdapter* adapter);
-        virtual void update(const Mods* mods) override;
+        virtual void update(const ModelData* model_data) override;
 };

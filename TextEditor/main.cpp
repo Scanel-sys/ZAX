@@ -10,9 +10,14 @@ int main() {
     View view(&model, &adapter);
     Controller controller(&model, &adapter);
 
-    adapter.get_input();
-    model.do_something();
-    adapter.get_input();
+    while (model.get_regime() != QUIT)
+    {
+        do {
+            controller.read_input();
+        } while (controller.is_valid_input() != true);
 
+        controller.pass_input_to_model();
+        model.handle_input();
+    }
     return 0;
 }
