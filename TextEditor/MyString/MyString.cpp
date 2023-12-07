@@ -491,6 +491,15 @@ long long MyString::find(const char* line_to_find, unsigned int index)
     return -1;
 }
 
+long long MyString::simple_find(const char char_to_find, unsigned int index)
+{
+    for (long long i = 0; i < this->size(); i++)
+    {
+        if (this->data()[i] == char_to_find)
+            return true;
+    }
+    return false;
+}
 
 // ==========================================================================
 // =============================== private ==================================

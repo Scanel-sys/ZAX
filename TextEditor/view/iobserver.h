@@ -1,11 +1,6 @@
 #pragma once
 
-enum Regime {
-    NAVIGATION, WRITE, COMMAND, FIND, QUIT
-};
-
 struct ModelData {
-    enum Regime regime;
     char content;
     char command;
     char cursor;

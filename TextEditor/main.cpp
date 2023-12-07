@@ -3,6 +3,13 @@
 #include "view/ncurses_adapter.h"
 #include "Controller/Controller.h"
 
+/*
+    TODO:
+        + > Controller::regime handler
+        + > Controller::validation
+        > backspace | delete add
+        > mystringS in model
+*/
 
 int main() {
     Model model;
@@ -15,9 +22,7 @@ int main() {
         do {
             controller.read_input();
         } while (controller.is_valid_input() != true);
-
-        controller.pass_input_to_model();
-        model.handle_input();
+        controller.handle_input();
     }
     return 0;
 }

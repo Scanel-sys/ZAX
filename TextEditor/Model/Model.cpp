@@ -3,14 +3,15 @@
 
 Model::Model() {
     this->regime_name_ = "NAVIGATION";
+    this->regime_ = NAVIGATION;
     this->user_input_;
-    this->model_data_ = {NAVIGATION, 0x00, 0x00, 0x00};
+    this->model_data_ = {0x00, 0x00, 0x00};
 }
 
 
 void Model::attach(IObserver* observer) {
     this->observers_.push_back(observer);
-    ModelData all = {NAVIGATION, 0xFF, 0xFF, 0xFF};
+    ModelData all = {0xFF, 0xFF, 0xFF};
     observer->update((const ModelData*)&all);
 }
 
@@ -25,13 +26,13 @@ void Model::notify() {
         this->observers_[i]->update((const ModelData*)&model_data_);
 }
 
-MyString& Model::get_command() {
+MyString& Model::get_regime_name_str(){
     return this->regime_name_;
 }
 
-enum Regime Model::get_regime()
+enum Regime Model::get_regime() const
 {
-    return this->model_data_.regime;
+    return this->regime_;
 }
 
 void Model::take_new_input(char new_input)
@@ -39,8 +40,27 @@ void Model::take_new_input(char new_input)
     this->model_data_.content = new_input;
 }
 
-void Model::handle_input() {
-    this->regime_name_ = "QUIT";
+void Model::handle_text_input() {
     this->model_data_.command = 0xFF;
     notify();
+}
+
+unsigned int Model::get_command_size() const
+{
+    return this->command_.size();
+}
+
+void Model::handle_navigation_one_symbol_command()
+{
+
+}
+
+void Model::move_cursor(enum MoveCursorWays way)
+{
+
+}
+
+void Model::change_regime()
+{
+
 }

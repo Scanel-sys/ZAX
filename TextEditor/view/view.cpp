@@ -13,7 +13,7 @@ View::View(Model* model, NcursesAdapter* adapter) {
 void View::update(const ModelData* model_data) {
     if (model_data->command == 0xFF) {
         this->adapter_->clear_window(command_window_id_);
-        this->adapter_->write_window(command_window_id_, this->model_->get_command());
+        this->adapter_->write_window(command_window_id_, this->model_->get_regime_name_str());
         this->adapter_->refresh_window(command_window_id_);
     }
 }

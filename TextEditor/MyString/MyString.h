@@ -74,6 +74,7 @@ public:
 
     long long find(const std::string line_to_find, unsigned int index = 0);
     long long find(const char* line_to_find, unsigned int index = 0);
+    long long simple_find(const char char_to_find, unsigned int index = 0);
 
 private:
     char* value_;
