@@ -5,10 +5,8 @@
 
 /*
     TODO:
-        + > Controller::regime handler
-        + > Controller::validation
         > backspace | delete add
-        > mystringS in model
+        > model handle text input
 */
 
 int main() {

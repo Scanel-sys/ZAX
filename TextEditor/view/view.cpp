@@ -11,9 +11,39 @@ View::View(Model* model, NcursesAdapter* adapter) {
 }
 
 void View::update(const ModelData* model_data) {
-    if (model_data->command == 0xFF) {
-        this->adapter_->clear_window(command_window_id_);
-        this->adapter_->write_window(command_window_id_, this->model_->get_regime_name_str());
-        this->adapter_->refresh_window(command_window_id_);
+    this->adapter_->clear_window(content_window_id_);
+    this->adapter_->write_window(content_window_id_, this->model_->get_output_line(0));
+    this->adapter_->refresh_window(content_window_id_);
+
+    this->adapter_->clear_window(command_window_id_);
+    this->adapter_->write_window(command_window_id_, this->gather_status_bar());
+    this->adapter_->refresh_window(command_window_id_);
+}
+
+MyString View::gather_status_bar()
+{
+    MyString output;
+    output = this->model_->get_regime_name_str() + " | " + this->model_->get_filename() + " | ";
+    output += itoms(this->model_->get_actual_line_number()) + "/";
+    output += itoms(this->model_->get_max_line_number()) + " | ";
+    return output;
+}
+
+MyString itoms(unsigned int n)
+{
+    MyString output;
+    unsigned int temp_n = n;
+    do
+    {
+        output.append(1, '0' + temp_n % 10);
+        temp_n /= 10;
+    } while (temp_n > 0);
+    char temp;
+    for (unsigned int i = 0; i < output.size() / 2; i++)
+    {
+        char temp = output[i];
+        output[i] = output[output.size() - i - 1];
+        output[output.size() - i - 1] = temp;
     }
+    return output;
 }

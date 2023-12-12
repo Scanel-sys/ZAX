@@ -5,6 +5,7 @@
 #include "../MyString/MyString.h"
 
 
+
 class NcursesAdapter {
     private:
         std::vector<WINDOW*> windows_;
@@ -18,7 +19,7 @@ class NcursesAdapter {
         void delete_window(unsigned int window_id);
         void clear_window(unsigned int window_id);
         void refresh_window(unsigned int window_id);
-        void write_window(unsigned int window_id, MyString str);
+        void write_window(unsigned int window_id, MyString str, int line_number=0);
         void set_cursor(unsigned int y, unsigned int x);
-        char get_input();
+        int get_input();
 };

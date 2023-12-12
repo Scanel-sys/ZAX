@@ -9,6 +9,7 @@ MyString::MyString()
     this->SetTextLen(0);
     this->SetCapacity(BASIC_STRING_CAPACITY);
     this->StringAlloc();
+    this->SetLastSymbolZero();
 }
 
 MyString::MyString(std::initializer_list <char> list)
@@ -17,22 +18,21 @@ MyString::MyString(std::initializer_list <char> list)
     this->StringAlloc();
     unsigned int i = 0;
     for (auto element : list)
-    {
+    { 
         this->value_[i] = element;
         i++;
     }
+    this->SetLastSymbolZero();
 }
 
 MyString::MyString(const char* line) : MyString::MyString(line, strlen(line)) {}
 
 MyString::MyString(const char* line, unsigned int line_size)
 {
-    if (line)
-    {
-        this->SetSizeParameters(line_size);
-        this->StringAlloc();
-        this->CopyValue(line, line_size);
-    }
+    this->SetSizeParameters(line_size);
+    this->StringAlloc();
+    this->CopyValue(line, line_size);
+    this->SetLastSymbolZero();
 }
 
 MyString::MyString(std::string str) : MyString::MyString(str.c_str(), str.size()) {}
@@ -43,7 +43,7 @@ MyString::MyString(unsigned int count, char c)
     this->StringAlloc();
     for (unsigned int i = 0; i < this->size(); i++)
         this->value_[i] = c;
-    this->value_[this->size()] = ENDLINE_SYMBOL;
+    this->SetLastSymbolZero();
 }
 
 MyString::MyString(const MyString& other) : MyString::MyString(other.c_str(), other.size()) {}
@@ -86,14 +86,19 @@ unsigned int MyString::capacity() const
 
 void MyString::clear()
 {
-    this->value_[0] = ENDLINE_SYMBOL;
     this->SetTextLen(0);
+    this->SetLastSymbolZero();
 }
 
 void MyString::SetZeroes()
 {
     for (unsigned int i = 0; i < this->capacity_; i++)
         this->value_[i] = ENDLINE_SYMBOL;
+}
+
+void MyString::SetLastSymbolZero()
+{
+    this->value_[this->size()] = ENDLINE_SYMBOL;
 }
 
 void MyString::shrink_to_fit()
@@ -129,49 +134,42 @@ MyString MyString::operator+(const std::string input_value)
 
 MyString& MyString::operator+=(const char* input_value)
 {
-    this->append(input_value);
-    return *this;
+    return this->append(input_value);
 }
 
 MyString& MyString::operator+=(const std::string input_value)
 {
-    this->append(input_value);
-    return *this;
+    return this->append(input_value);
 }
 
 MyString& MyString::operator+=(const MyString& input_value)
 {
-    this->append(input_value);
-    return *this;
+    return this->append(input_value);
 }
 
 
 MyString& MyString::operator=(const char* input_value)
 {
     this->clear();
-    this->append(input_value);
-    return *this;
+    return this->append(input_value);
 }
 
 MyString& MyString::operator=(const std::string input_value)
 {
     this->clear();
-    this->append(input_value);
-    return *this;
+    return this->append(input_value);
 }
 
 MyString& MyString::operator=(const char input_value)
 {
     this->clear();
-    this->append(1, input_value);
-    return *this;
+    return this->append(1, input_value);
 }
 
 MyString& MyString::operator=(const MyString& input_value)
 {
     this->clear();
-    this->append(input_value);
-    return *this;
+    return this->append(input_value);
 }
 
 std::ostream& operator<<(std::ostream& out, const MyString& s)
@@ -291,8 +289,7 @@ MyString& MyString::insert(unsigned int index, unsigned int count, char symbol)
 
 MyString& MyString::insert(unsigned int index, const char* line)
 {
-    this->replace(index, 0, line);
-    return *this;
+    return this->replace(index, 0, line);
 }
 
 MyString& MyString::insert(unsigned int index, const char* line, unsigned int count)
@@ -307,14 +304,12 @@ MyString& MyString::insert(unsigned int index, const char* line, unsigned int co
 
 MyString& MyString::insert(unsigned int index, std::string str)
 {
-    this->replace(index, 0, str.c_str());
-    return *this;
+    return this->replace(index, 0, str.c_str());
 }
 
 MyString& MyString::insert(unsigned int index, std::string str, unsigned int count)
 {
-    this->insert(index, str.c_str(), count);
-    return *this;
+    return this->insert(index, str.c_str(), count);
 }
 
 MyString& MyString::erase(unsigned int index, unsigned int count)
@@ -341,6 +336,7 @@ MyString& MyString::append(unsigned int count, const char symbol)
     for (unsigned int i = 0; i < count; i++)
         this->value_[this->size() + i] = symbol;
     this->SetTextLen(this->size() + count);
+    this->SetLastSymbolZero();
     return *this;
 }
 
@@ -351,6 +347,7 @@ MyString& MyString::append(const char* line)
 
     this->CopyValue(line, line_size, this->size());
     this->SetTextLen(this->size() + line_size);
+    this->SetLastSymbolZero();
     return *this;
 }
 
@@ -370,6 +367,7 @@ MyString& MyString::append(const char* line, unsigned int index, unsigned int co
     for (unsigned int i = 0; i < chars_to_copy; i++)
         this->value_[this->size() + i] = line[index + i];
     this->SetTextLen(this->size() + chars_to_copy);
+    this->SetLastSymbolZero();
     return *this;
 }
 
@@ -411,13 +409,13 @@ MyString& MyString::replace(unsigned int index, unsigned int count, const char* 
         delete[] str_to_concat;
     }
     this->SetTextLen(this->size() + strlen(line) - count);
+    this->SetLastSymbolZero();
     return *this;
 }
 
 MyString& MyString::replace(unsigned int index, unsigned int count, std::string str)
 {
-    this->replace(index, count, str.c_str());
-    return *this;
+    return this->replace(index, count, str.c_str());
 }
 
 MyString MyString::substr(unsigned int pos, unsigned int count)

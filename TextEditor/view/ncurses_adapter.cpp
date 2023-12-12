@@ -57,15 +57,15 @@ void NcursesAdapter::refresh_window(unsigned int window_id) {
     wrefresh(cur_window);
 }
 
-void NcursesAdapter::write_window(unsigned int window_id, MyString str) {
+void NcursesAdapter::write_window(unsigned int window_id, MyString str, int line_number) {
     WINDOW* cur_window = this->windows_[window_id];
-    mvwprintw(cur_window, 0, 0, str.c_str());
+    mvwprintw(cur_window, line_number, 0, str.c_str());
 }
 
 void NcursesAdapter::set_cursor(unsigned int y, unsigned int x) {
     move(y, x);
 }
 
-char NcursesAdapter::get_input() {
+int NcursesAdapter::get_input() {
     return getch();
 }

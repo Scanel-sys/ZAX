@@ -28,6 +28,7 @@ public:
     unsigned int capacity() const;
     void clear();
     void SetZeroes();
+    void SetLastSymbolZero();
 
     void shrink_to_fit();
 

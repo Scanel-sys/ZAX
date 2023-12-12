@@ -1,18 +1,14 @@
 #pragma once
 
+#define K_ESCAPE       0x1b
+#define K_BACKSPACE 0x8
+#define K_ENTER     0xa
+
+
 enum Regime {
     NAVIGATION, WRITE, COMMAND, FIND, QUIT
 };
 
 enum MoveCursorWays {
     UP, DOWN, LEFT, RIGHT, PAGE_UP, PAGE_DOWN
-};
-
-enum KeyWays {
-    KEY_DOWN_W = 0x102,
-    KEY_UP_W = 0x103,
-    KEY_LEFT_W = 0x104,
-    KEY_RIGHT_W = 0x105,
-    PAGE_UP_W,
-    PAGE_DOWN_W
 };
