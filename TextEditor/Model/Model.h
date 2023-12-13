@@ -5,12 +5,16 @@
 #include <vector>
 #include "../controller_model_interactive_structures.h"
 #include <utility>
+#include <fstream>
 
+#define MAX_LINE_SIZE           (255)
+#define DEAFULT_PAGES_TO_LOAD   (3)
 
 struct xy_coords {
     int x;
     int y;
 };
+
 
 
 class Model {
@@ -41,7 +45,11 @@ class Model {
         void move_text_cursor_right();
 
         void clear_command();
+        void clear_view_output();
         void reset_command_coords();
+
+        void open_file();
+        void build_output();
 
     public:
         Model();

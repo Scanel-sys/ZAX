@@ -10,7 +10,7 @@ Model::Model() {
 
     this->model_data_.view_actual_line_number = 0;
     this->model_data_.general_actual_line_number = 0;
-    this->model_data_.max_line_number = 0;
+    this->model_data_.max_line_number = 1;
 
     this->command_;
     this->regime_ = NAVIGATION;
@@ -60,11 +60,11 @@ void Model::move_text_cursor_left()
 
 void Model::move_text_cursor_right()
 {
-    if (this->cursor_position_text.x < this->model_data_.x_max)
+    if (this->cursor_position_text.x < this->model_data_.x_max && this->cursor_position_text.x < this->get_actual_content_line().size())
     {
         this->cursor_position_text.x++;
     }
-    else if (this->cursor_position_text.y < this->view_content_.size())
+    else if (this->cursor_position_text.x == this->model_data_.x_max && this->cursor_position_text.y < this->view_content_.size())
     {
         this->cursor_position_text.x = 0;
         this->cursor_position_text.y++;
@@ -76,10 +76,73 @@ void Model::clear_command()
     this->command_.clear();
 }
 
+void Model::clear_view_output()
+{
+    this->view_content_.clear();
+}
+
 void Model::reset_command_coords()
 {
     this->cursor_position_cmd.x = 0;
 }
+
+void Model::open_file()
+{
+    std::ifstream fin;
+    fin.open(this->filename_.c_str(), std::ios::binary);
+    if (!fin.is_open())
+    {
+        this->filename_ = "NULL";
+        return;
+    }
+
+    content_.clear();
+    content_.push_back("");
+    char c;
+    int row_iter = 0, line_iter = 0;
+    while (1)
+    {
+        c = fin.get();
+        if (fin.eof())
+            break;
+        //else if (c == '\r')
+            //continue;
+        else if (c == '\n')
+        {
+            content_[row_iter].append(1, c);
+            content_.push_back("");
+            row_iter++;
+            line_iter = 0;
+        }
+        else if (line_iter == MAX_LINE_SIZE)
+        {
+            content_.push_back("");
+            line_iter = 0;
+            row_iter++;
+            content_[row_iter].append(1, c);
+            line_iter++;
+        }
+    }
+    fin.close();
+}
+
+void Model::build_output()
+{
+    int symbols_to_load = this->model_data_.x_max * this->model_data_.y_max * DEAFULT_PAGES_TO_LOAD;
+    int needed_strings = symbols_to_load / MAX_LINE_SIZE + 1;
+    this->clear_view_output();
+
+    unsigned int line_iter = 0;
+    unsigned int line_start = this->get_actual_line_number() -  this->model_data_.y_max;
+    unsigned int line_stop = line_start + this->model_data_.y_max;
+
+    while (line_iter < this->content_.size() && line_iter < needed_strings)
+    {
+
+    }
+
+}
+
 
 
 void Model::attach(IObserver* observer) {
@@ -119,7 +182,12 @@ void Model::handle_text_input() {
     }
     else
     {
-        this->get_actual_view_line().insert(this->get_text_cursor_position().x, 1, (char)this->get_input());
+        xy_coords temp_text_coords = this->get_text_cursor_position();
+        if (this->get_actual_view_line().size() < MAX_LINE_SIZE)
+        {
+            
+            this->get_actual_view_line().insert(temp_text_coords.x, 1, (char)this->get_input());
+        }
         this->move_text_cursor(RIGHT);
     }
     this->notify();
@@ -359,7 +427,7 @@ MyString Model::get_view_line(unsigned int line_number)
 
 unsigned int Model::get_actual_line_number()
 {
-    return this->model_data_.general_actual_line_number;
+    return this->model_data_.general_actual_line_number + 1;
 }
 
 const std::vector<MyString>& Model::get_view_content() const 

@@ -40,6 +40,7 @@ bool Controller::is_valid_input()
 
 void Controller::handle_input()
 {
+	enum Regime actual_regime = this->model_->get_regime();
 	if (this->is_special_key())
 	{
 		int code = this->get_input_code();
@@ -55,7 +56,12 @@ void Controller::handle_input()
 			break;
 
 		case K_ENTER:
-			this->model_->execute_command();
+			if(actual_regime != WRITE)
+				this->model_->execute_command();
+			//else
+			//{
+			//	this->handle_other_regimes();
+			//}
 			break;
 
 		default:
@@ -64,7 +70,6 @@ void Controller::handle_input()
 	}
 	else
 	{
-		enum Regime actual_regime = this->model_->get_regime();
 		switch (actual_regime)
 		{
 		case NAVIGATION:
@@ -166,7 +171,7 @@ bool Controller::is_valid_navigation_input()
 
 bool Controller::is_valid_cmdline_input()
 {
-	return this->is_text() || this->is_navigation_button();
+	return this->is_text() || this->is_navigation_button() || this->get_input_code() == K_ENTER;
 }
 
 
