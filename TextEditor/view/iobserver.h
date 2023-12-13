@@ -3,8 +3,6 @@
 struct ModelData {
     int content;
     char command;
-    unsigned int cursor_position_cmd;
-    unsigned int cursor_position_text;
     unsigned int y_max;
     unsigned int x_max;
     unsigned int view_actual_line_number;

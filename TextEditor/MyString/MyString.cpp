@@ -323,7 +323,7 @@ MyString& MyString::erase(unsigned int index, unsigned int count)
     if (index < stop_index)
     {
         this->value_[index] = ENDLINE_SYMBOL;
-        this->SetTextLen(index - 1);
+        this->SetTextLen(index);
         this->append(&this->value_[stop_index]);
     }
     return *this;

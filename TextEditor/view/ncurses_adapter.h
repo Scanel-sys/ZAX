@@ -9,6 +9,7 @@
 class NcursesAdapter {
     private:
         std::vector<WINDOW*> windows_;
+        WINDOW* active_window_;
     public:
         NcursesAdapter ();
         ~NcursesAdapter ();
@@ -20,6 +21,7 @@ class NcursesAdapter {
         void clear_window(unsigned int window_id);
         void refresh_window(unsigned int window_id);
         void write_window(unsigned int window_id, MyString str, int line_number=0);
-        void set_cursor(unsigned int y, unsigned int x);
+        virtual void set_active_window(unsigned int window_id);
+        void set_cursor(unsigned int window_id, unsigned int y, unsigned int x);
         int get_input();
 };

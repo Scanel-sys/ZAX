@@ -1,6 +1,6 @@
 #include "Controller.h"
 
-MyString symbols_{ "~`!@#$%^&*()-_=+[{]}\\|;:'\",<.>/?" };
+MyString symbols_{ "~`!@#$%^&*()-_=+[{]}\\|;:'\",<.>/? " };
 MyString navigation_one_symbol_commands_{ "^&wbxpg" };
 MyString navigation_command_symbols_{ "diwywG" };
 MyString regime_change_symbols_{ "iISAr:/?" };
@@ -19,7 +19,7 @@ Controller::Controller(Model* model, NcursesAdapter* adapter){
 	this->input_char_ = 0xFF;
 	unsigned int x_max, y_max;
 	adapter->get_size(&x_max, &y_max);
-	this->model_->set_max_xy(x_max, y_max);
+	this->model_->set_max_xy(x_max - 1, y_max - 1);
 }
 
 void Controller::read_input()
@@ -72,18 +72,8 @@ void Controller::handle_input()
 				this->handle_navigation();
 			break;
 
-		case WRITE:
-			if (this->is_valid_write_input())
-				this->handle_other_regimes();
-			break;
-
-		case COMMAND:
-			if (this->is_valid_command_input())
-				this->handle_other_regimes();
-			break;
-
-		case FIND:
-			if (is_valid_find_input())
+		default:
+			if (this->is_valid_cmdline_input())
 				this->handle_other_regimes();
 			break;
 		}
@@ -174,40 +164,34 @@ bool Controller::is_valid_navigation_input()
 		|| this->is_in_navigation_command_symbols() || this->is_ciph();
 }
 
-bool Controller::is_valid_find_input()
+bool Controller::is_valid_cmdline_input()
 {
 	return this->is_text() || this->is_navigation_button();
 }
 
-bool Controller::is_valid_write_input()
-{
-	return this->is_text() || this->is_navigation_button();
-}
-
-bool Controller::is_valid_command_input()
-{
-	return this->is_text();
-}
 
 
 void Controller::handle_navigation()
 {
 	if (this->is_navigation_button())
+	{
 		this->mutate_cursor_moving_keys_for_model();
-	
-	this->pass_input_to_model();
+		this->pass_input_to_model();
+		this->model_->handle_cursor_change();
+	}
+	else
+	{
+		this->pass_input_to_model();
 
-	if (this->is_in_regime_change_symbols())
-		this->model_->handle_regime_change();
-	
-	else if (this->is_navigation_button())
-		this->model_->handle_text_input();
-	
-	else if (this->is_in_navigation_one_symbol_commands())
-		this->model_->handle_navigation_one_symbol_command();
-	
-	else if (this->is_in_navigation_command_symbols() || this->is_ciph())
-		this->model_->handle_text_input();
+		if (this->is_in_regime_change_symbols())
+			this->model_->handle_regime_change();
+
+		else if (this->is_in_navigation_one_symbol_commands())
+			this->model_->handle_navigation_one_symbol_command();
+
+		else if (this->is_in_navigation_command_symbols() || this->is_ciph())
+			this->model_->handle_text_input();
+	}
 }
 
 void Controller::handle_other_regimes()
@@ -215,9 +199,14 @@ void Controller::handle_other_regimes()
 	if (this->is_navigation_button())
 	{
 		this->mutate_cursor_moving_keys_for_model();
+		this->pass_input_to_model();
+		this->model_->handle_cursor_change();
 	}
-	this->pass_input_to_model();
-	this->model_->handle_text_input();
+	else
+	{
+		this->pass_input_to_model();
+		this->model_->handle_text_input();
+	}
 }
 
 void Controller::mutate_cursor_moving_keys_for_model()
@@ -247,3 +236,9 @@ void Controller::mutate_cursor_moving_keys_for_model()
 	this->input_char_ = model_format;
 }
 
+void Controller::adapt_model_for_window_size()
+{
+	//unsigned int x_max, y_max;
+	//this->adapter_->get_size(&x_max, &y_max);
+	//this->model_->set_max_xy(x_max, y_max);
+}

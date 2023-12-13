@@ -4,11 +4,13 @@
 NcursesAdapter::NcursesAdapter() {
     initscr();
     cbreak();
-    raw();
-    nonl();
-    noecho();
-    curs_set(0);
     keypad(stdscr, TRUE);
+
+    //raw();
+    //nonl();
+    noecho();
+    //curs_set(0);
+
     // Colors
     start_color();
     use_default_colors();
@@ -35,6 +37,7 @@ unsigned int NcursesAdapter::add_window(unsigned int sy, unsigned int sx,
     WINDOW *new_window = newwin(h, w, sy, sx);
     if (color_pair_id > 0)
         wbkgd(new_window, COLOR_PAIR(color_pair_id));
+    keypad(new_window, TRUE);
     this->windows_.push_back(new_window);
     wrefresh(new_window);
     return this->windows_.size() - 1;
@@ -57,15 +60,20 @@ void NcursesAdapter::refresh_window(unsigned int window_id) {
     wrefresh(cur_window);
 }
 
+void NcursesAdapter::set_active_window(unsigned int window_id) {
+    this->active_window_ = this->windows_[window_id];
+}
+
 void NcursesAdapter::write_window(unsigned int window_id, MyString str, int line_number) {
     WINDOW* cur_window = this->windows_[window_id];
     mvwprintw(cur_window, line_number, 0, str.c_str());
 }
 
-void NcursesAdapter::set_cursor(unsigned int y, unsigned int x) {
-    move(y, x);
+void NcursesAdapter::set_cursor(unsigned int window_id, unsigned int y, unsigned int x) {
+    this->active_window_ = this->windows_[window_id];
+    wmove(this->active_window_, y, x);
 }
 
 int NcursesAdapter::get_input() {
-    return getch();
+    return wgetch(this->active_window_);
 }

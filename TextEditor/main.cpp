@@ -17,6 +17,7 @@ int main() {
 
     while (model.get_regime() != QUIT)
     {
+        controller.adapt_model_for_window_size();
         do {
             controller.read_input();
         } while (controller.is_valid_input() != true);

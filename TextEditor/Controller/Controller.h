@@ -27,9 +27,7 @@ class Controller {
 		bool is_symbol();
 
 		bool is_valid_navigation_input();
-		bool is_valid_find_input();
-		bool is_valid_write_input();
-		bool is_valid_command_input();
+		bool is_valid_cmdline_input();
 
 		void handle_navigation();
 		void handle_other_regimes();
@@ -42,5 +40,6 @@ class Controller {
 		bool is_valid_input();
 		void handle_input();
 		int get_input_code();
+		void adapt_model_for_window_size();
 };
 
